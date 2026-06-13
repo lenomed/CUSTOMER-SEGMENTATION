@@ -1,0 +1,28 @@
+======================================================================
+CUSTOMER SEGMENTATION - CLUSTER ANALYSIS REPORT
+======================================================================
+
+Number of Clusters: 2
+Total Customers: 3306
+
+VALIDATION METRICS:
+  Silhouette Score: 0.327
+  Davies-Bouldin Index: 1.296
+  Calinski-Harabasz Index: 1672.62
+
+CLUSTER PROFILES:
+----------------------------------------------------------------------
+
+Cluster 0:
+  Size: 2103 customers (63.6%)
+  Avg Recency: 116.1 days
+  Avg Frequency: 1.9 transactions
+  Avg Monetary: £371.52
+  Total Revenue: £781,300.48
+
+Cluster 1:
+  Size: 1203 customers (36.4%)
+  Avg Recency: 46.6 days
+  Avg Frequency: 4.4 transactions
+  Avg Monetary: £1453.06
+  Total Revenue: £1,748,028.88

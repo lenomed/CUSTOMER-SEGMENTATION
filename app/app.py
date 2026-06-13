@@ -3,7 +3,8 @@ import numpy as np
 from datetime import datetime
 from sklearn.preprocessing import StandardScaler
 import joblib
-
+import seaborn as sns
+import matplotlib.pyplot as plt
 import os
 
 # CONFIGURATION
@@ -17,14 +18,17 @@ os.makedirs(OUTPUT_PATH, exist_ok=True)
 os.makedirs(RAW_DATA_PATH, exist_ok=True)
 
 # LOAD DATA
-print("Loading data...")
 df = pd.read_excel(DATA_PATH, sheet_name='Online Retail')
-print(f"✓ Loaded {len(df)} rows, {len(df.columns)} columns")
+print(df.head(20))
+print(df.info())
+print(df.describe())
+print(f"Loaded {len(df)} rows, {len(df.columns)} columns")
 print(f"Columns: {list(df.columns)}")
+print(df.isnull().corr().sum)
 
+
+print(df['CustomerID'])
 # DATA CLEANING
-print("\n--- DATA CLEANING ---")
-
 # Remove rows with missing CustomerID (critical for segmentation)
 print(f"Rows with missing CustomerID: {df['CustomerID'].isna().sum()}")
 df = df.dropna(subset=['CustomerID'])
@@ -40,15 +44,14 @@ df = df[df['Quantity'] > 0]
 print(f"Rows with non-positive UnitPrice: {(df['UnitPrice'] <= 0).sum()}")
 df = df[df['UnitPrice'] > 0]
 
-print(f"✓ After cleaning: {len(df)} rows")
+print(f" After cleaning: {len(df)} rows")
 
 # CALCULATE TOTAL SPENT PER TRANSACTION
 df['TotalSpent'] = df['Quantity'] * df['UnitPrice']
-print(f"✓ Created TotalSpent column")
 
 # CONVERT DATE TO DATETIME
 # Excel stores dates as numbers, convert them
-df['InvoiceDate'] = pd.to_datetime(df['InvoiceDate'], unit='D', origin='1899-12-30')
+df['InvoiceDate'] = pd.to_datetime(df['InvoiceDate'], errors='coerce')
 print(f"Date range: {df['InvoiceDate'].min()} to {df['InvoiceDate'].max()}")
 
 # Reference date for RFM calculation (last date + 1 day)
@@ -78,9 +81,6 @@ customer_data['ItemsPerTransaction'] = customer_data['TotalQuantity'] / customer
 print(f"✓ Created {len(customer_data)} customer profiles")
 print(f"\nRFM Statistics:")
 print(customer_data[['Recency', 'Frequency', 'Monetary']].describe())
-
-# SELECT FEATURES FOR CLUSTERING
-print("\n--- SELECTING FEATURES FOR CLUSTERING ---")
 
 # Features to use for clustering
 clustering_features = ['Recency', 'Frequency', 'Monetary', 'AvgOrderValue', 'ItemsPerTransaction']

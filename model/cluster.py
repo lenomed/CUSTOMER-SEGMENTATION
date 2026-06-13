@@ -9,7 +9,7 @@ import warnings
 warnings.filterwarnings('ignore')
 
 # CONFIGURATION
-PROCESSED_DATA_PATH = './data/processed/'
+PROCESSED_DATA_PATH = r'C:\Users\kelec\source\repos\CUSTOMER-SEGMENTATION\data\processed'
 OUTPUT_PATH = './outputs/'
 N_CLUSTERS_MAX = 10
 RANDOM_SEED = 42
@@ -20,9 +20,9 @@ os.makedirs(f'{OUTPUT_PATH}figures/', exist_ok=True)
 os.makedirs(f'{OUTPUT_PATH}reports/', exist_ok=True)
 
 # LOAD PREPROCESSED DATA
-X_scaled = pd.read_csv(f'{PROCESSED_DATA_PATH}scaled_features.csv', index_col=0)
-customer_data = pd.read_csv(f'{PROCESSED_DATA_PATH}customer_profiles.csv')
-scaler = joblib.load(f'{PROCESSED_DATA_PATH}scaler.pkl')
+X_scaled = pd.read_csv(os.path.join(PROCESSED_DATA_PATH, "scaled_features.csv"), index_col=0)
+customer_data = pd.read_csv(os.path.join(PROCESSED_DATA_PATH, "customer_profiles.csv"))
+scaler = joblib.load(os.path.join(PROCESSED_DATA_PATH, "scaler.pkl"))
 
 print(f"✓ Loaded {len(X_scaled)} customers with {len(X_scaled.columns)} features")
 
@@ -105,8 +105,6 @@ print("\nCluster Summary:")
 print(cluster_summary)
 
 # CREATE DETAILED CLUSTER PROFILES
-print(f"\n--- DETAILED CLUSTER PROFILES ---")
-
 for cluster_id in sorted(customer_data['Cluster'].unique()):
     cluster_customers = customer_data[customer_data['Cluster'] == cluster_id]
     
@@ -127,7 +125,6 @@ for cluster_id in sorted(customer_data['Cluster'].unique()):
     print(f"  Min Customer Value:    £{cluster_customers['Monetary'].min():.2f}")
 
 # VISUALIZE CLUSTERS (PCA PROJECTION)
-
 from sklearn.decomposition import PCA
 
 pca = PCA(n_components=2)
@@ -184,8 +181,6 @@ plt.savefig(f'{OUTPUT_PATH}figures/03_feature_importance.png', dpi=300, bbox_inc
 plt.close()
 
 # CLUSTER SIZE AND VALUE DISTRIBUTION
-print(f"\n--- CLUSTER DISTRIBUTION ---")
-
 fig, axes = plt.subplots(2, 2, figsize=(14, 10))
 
 # Cluster sizes
@@ -228,6 +223,7 @@ plt.close()
 customer_data.to_csv(f'{OUTPUT_PATH}customer_segments.csv', index=False)
 
 # Save model
+os.makedirs(f"{OUTPUT_PATH}models", exist_ok=True)
 joblib.dump(kmeans_final, f'{OUTPUT_PATH}models/kmeans_model.pkl')
 
 # Save PCA model
