@@ -94,13 +94,14 @@ print(f"Feature shape: {X.shape}")
 print("\n--- HANDLING OUTLIERS ---")
 
 outliers_before = len(X)
+# In data_preparation.py, find this section:
 
 for col in clustering_features:
     Q1 = X[col].quantile(0.25)
     Q3 = X[col].quantile(0.75)
     IQR = Q3 - Q1
-    lower_bound = Q1 - 1.5 * IQR
-    upper_bound = Q3 + 1.5 * IQR
+    lower_bound = Q1 - 3.0 * IQR  # Changed from 1.5 to 3.0
+    upper_bound = Q3 + 3.0 * IQR
     
     X = X[(X[col] >= lower_bound) & (X[col] <= upper_bound)]
     
